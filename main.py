@@ -2,12 +2,14 @@ import socket
 import tkinter
 import customtkinter
 import feedparser
+from functools import partial
+import webbrowser
+from tkHyperlinkManager import *
 
 import folium
 from folium.plugins import MarkerCluster
 import pandas as pd
 
-feed = feedparser.parse
 
 def connect():
     # Define the server address and port
@@ -64,7 +66,6 @@ customtkinter.set_default_color_theme("dark-blue")
 
 app = customtkinter.CTk()
 app.geometry("1200x600")
-app.resizable(False, False)
 
 # configure grid layout (4x4)
 app.grid_columnconfigure(1, weight=1)
@@ -107,7 +108,20 @@ label_response.place(relx=0.3, rely=0.3, anchor=tkinter.CENTER)
 value_response = customtkinter.CTkLabel(app, text="", text_color="white")
 value_response.place(relx=0.4, rely=0.3, anchor=tkinter.CENTER)
 
+feed = feedparser.parse("https://github.com/ThomasMarcCarter/FingerTrack/commits/main.atom")
 
+print('Number of RSS posts :', len(feed.entries))
+entry = feed.entries[0]
+print(entry.keys())
+print(entry.updated)
+print(entry.title)
+print(entry.link)
+
+app.textbox = customtkinter.CTkTextbox(app, width=200, height=20)
+app.textbox.grid(row=0, column=1, padx=(0, 2), pady=(0, 2), sticky="nsew")
+for i in range(0, len(feed.entries)):
+    app.textbox.insert("0.0","\n" + feed.entries[i].title +"\n" + feed.entries[i].link + "\n" + feed.entries[i].updated + "\n" + "----------------------------------------------------" )
+app.textbox.configure(state="disabled")
 
 
 # Start the GUI event loop
