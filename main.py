@@ -26,7 +26,9 @@ def connect():
         print("Connected to {}:{}".format(host, port))
         connect_button.configure(state='disabled')
         send_button.configure(state='normal')
-        disconnect_button.configure(state='normal')
+        send_zero_button.configure(state='normal')
+        send_one_button.configure(state='normal')
+        disconnect_button.configure(state='enabled')
         label_status.configure(text_color="green")
         label_status.configure(text="Connected")
     except:
@@ -51,7 +53,32 @@ def send_numbers():
     value_response.configure(text_color="red")
     value_response.configure(text=decresponse)
 
+def send_one():
+    message = "1"
+    client_socket.sendall(message.encode())
+    response = client_socket.recv(1024)
+    decresponse = response.decode()
+
+    value_response.configure(text_color="white")
+    value_response.configure(text=decresponse)
+
+def send_zero():
+    message = "0"
+    client_socket.sendall(message.encode())
+    response = client_socket.recv(1024)
+    decresponse = response.decode()
+
+    value_response.configure(text_color="blue")
+    value_response.configure(text=decresponse)
+
+    value_response.configure(text_color="red")
+    value_response.configure(text=decresponse)
+
 def disconnect():
+    #server handling bullshit
+    message = "exit"
+    client_socket.sendall(message.encode())
+
     client_socket.close()
     connect_button.configure(state='normal')
     send_button.configure(state='disabled')
@@ -83,6 +110,12 @@ connect_button.grid(row=9, column=0, padx=20, pady=2)
 
 send_button = customtkinter.CTkButton(app.sidebar_frame, text="Send", command=send_numbers, state='disabled')
 send_button.grid(row=3, column=0, padx=20, pady=2)
+
+send_zero_button = customtkinter.CTkButton(app.sidebar_frame, text="Send 0", command=send_zero, state='disabled')
+send_zero_button.grid(row=5, column=0, padx=20, pady=2)
+
+send_one_button = customtkinter.CTkButton(app.sidebar_frame, text="Send 1", command=send_one, state='disabled')
+send_one_button.grid(row=6, column=0, padx=20, pady=2)
 
 disconnect_button = customtkinter.CTkButton(app.sidebar_frame, text="Disconnect", command=disconnect, state='disabled')
 disconnect_button.grid(row=10, column=0, padx=20, pady=2)
